@@ -1,4 +1,5 @@
 ﻿using POSUNO.Helpers;
+using POSUNO.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,12 +33,31 @@ namespace POSUNO.Pages
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            MessageDialog messageDialog;
             bool isValid = await ValidForm();
             if (!isValid)
             {
                 return;
             }
-            MessageDialog messageDialog = new MessageDialog("Vamos bien","Si");
+            Response response = await ApiService.LoginAsync(new LoginRequest
+            {
+                Email = EmailTextBox.Text,
+                Password = PasswordPasswordBox.Password
+            });
+
+            if (!response.IsSuccess)
+            {
+                messageDialog = new MessageDialog(response.Message, "Error");
+            }
+
+            User user = (User)response.Result;
+            if (user ==  null)
+            {
+                messageDialog = new MessageDialog("Usuario o Contraseña Incorrectos", "Error");
+                await messageDialog.ShowAsync();
+                return;
+            }
+            messageDialog = new MessageDialog($"Bienvenido: {user.FullName }", "OK");
             await messageDialog.ShowAsync();
         }
 
@@ -56,9 +76,9 @@ namespace POSUNO.Pages
                 await messageDialog.ShowAsync();
                 return false;
             }
-            if (string.IsNullOrEmpty(PasswordPasswordBox.Password))
+            if (PasswordPasswordBox.Password.Length < 6)
             {
-                messageDialog = new MessageDialog("Debes ingresar tu Contraseña", "Error");
+                messageDialog = new MessageDialog("Debes ingresar tu Contraseña de al menos seis (6) carácteres", "Error");
                 await messageDialog.ShowAsync();
                 return false;
             }
