@@ -17,6 +17,8 @@ namespace POSUNO.Api.Data.Entities
         public string Description { get; set; }
         public decimal Price { get; set; }
         public float Stock { get; set; }
+        [Required]
         public User User { get; set; }
+        public bool IsActive { get;  set; }
     }
 }
