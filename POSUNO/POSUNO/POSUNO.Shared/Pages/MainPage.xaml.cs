@@ -33,7 +33,7 @@ namespace POSUNO.Pages
         {
             base.OnNavigatedTo(e);
             User = (User)e.Parameter;
-            WelcomeTexBlock.Text = $"Bienvenido: {User.FullName}";
+            WelcomeTexBlock.Text = $"Bienvenid@: {User.FullName}";
         }
         private async void LogoutImage_Tapped(object sender, TappedRoutedEventArgs e)
         {

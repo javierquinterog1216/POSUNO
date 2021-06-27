@@ -10,6 +10,7 @@ namespace POSUNO.Helpers
 {
     public class ApiService
     {
+       
         public static async Task<Response> LoginAsync(LoginRequest model)
         {
             try
@@ -21,9 +22,11 @@ namespace POSUNO.Helpers
 
                     ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                 };
+
+                var _url = Settings.GetApiUrl();
                 HttpClient client = new HttpClient(handler)
                 {
-                    BaseAddress = new Uri("https://localhost:44348/")
+                    BaseAddress = new Uri(_url)
                 };
 
                 HttpResponseMessage response = await client.PostAsync("api/Account/Login", content);
