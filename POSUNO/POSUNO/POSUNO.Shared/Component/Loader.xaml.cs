@@ -19,7 +19,7 @@ namespace POSUNO.Component
 {
     public sealed partial class Loader : UserControl
     {
-        private Popup _popup;
+        private Windows.UI.Xaml.Controls.Primitives.Popup _popup;
 
         public Loader()
         {
