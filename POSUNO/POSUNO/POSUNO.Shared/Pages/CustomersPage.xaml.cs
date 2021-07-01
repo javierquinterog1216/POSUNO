@@ -1,4 +1,5 @@
 ﻿using POSUNO.Component;
+using POSUNO.Dialogs;
 using POSUNO.Helpers;
 using POSUNO.Models;
 using System;
@@ -65,5 +66,21 @@ namespace POSUNO.Pages
             CustomersListView.Items.Clear();
             CustomersListView.ItemsSource = Customers;
         }
+
+        private async void AddCustomerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Customer customer = new Customer();
+            CustomerDialog customerDialog = new CustomerDialog(customer);
+            await customerDialog.ShowAsync();
+        }
+
+        private async void EditImage_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Customer customer = Customers[CustomersListView.SelectedIndex];
+            customer.IsEdit = true;
+            CustomerDialog customerDialog = new CustomerDialog(customer);
+            await customerDialog.ShowAsync();
+        }
     }
 }
+
