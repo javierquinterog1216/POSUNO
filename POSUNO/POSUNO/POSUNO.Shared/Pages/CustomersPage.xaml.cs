@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Popups;
@@ -120,6 +121,45 @@ namespace POSUNO.Pages
             Customer oldCustomer = Customers.FirstOrDefault(c => c.Id == newCustomer.Id);
             oldCustomer = newCustomer;
             RefreshList();
+        }
+
+        private async void DeleteImage_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ContentDialogResult result = await ConfirmDeleteAsync();
+            if (result != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            Loader loader = new Loader("Por favor Espere....");
+            loader.Show();
+            Customer customer = Customers[CustomersListView.SelectedIndex];
+
+            Response response = await ApiService.DeleteAsync("Customers",  customer.Id);
+            loader.Close();
+            if (!response.IsSuccess)
+            {
+                MessageDialog dialog = new MessageDialog(response.Message, "Error");
+                await dialog.ShowAsync();
+                return;
+            }
+
+            List<Customer> customers = Customers.Where(c => c.Id != customer.Id).ToList();
+            Customers = new ObservableCollection<Customer>(customers);
+            RefreshList();
+        }
+
+        private async Task<ContentDialogResult> ConfirmDeleteAsync()
+        {
+            ContentDialog confirDialog = new ContentDialog
+            {
+                Title = "Confirmación",
+                Content = "Estas Seguro que quieres eliminar el registro?",
+                PrimaryButtonText = "Si",
+                CloseButtonText = "No"
+            };
+
+            return await confirDialog.ShowAsync();
         }
     }
 }
