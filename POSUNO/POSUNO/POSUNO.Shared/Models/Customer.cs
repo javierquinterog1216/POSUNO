@@ -28,5 +28,6 @@ namespace POSUNO.Models
 
         public bool IsEdit { get; set; }
         public string FullName =>$"{FirstName} {LastName}";
+        public bool WasSaved { get; set; }
     }
 }

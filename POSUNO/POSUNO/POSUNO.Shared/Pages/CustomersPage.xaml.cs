@@ -72,6 +72,25 @@ namespace POSUNO.Pages
             Customer customer = new Customer();
             CustomerDialog customerDialog = new CustomerDialog(customer);
             await customerDialog.ShowAsync();
+            if (!customer.WasSaved)
+            {
+                return;
+            }
+            customer.User = MainPage.GetInstance().User;
+            Loader loader = new Loader("Por favor Espere....");
+            loader.Show();
+            Response response = await ApiService.PostAsync("Customers", customer);
+            loader.Close();
+
+            if (!response.IsSuccess)
+            {
+                MessageDialog dialog = new MessageDialog(response.Message, "Error");
+                await dialog.ShowAsync();
+                return;
+            }
+            Customer newCustomer = (Customer)response.Result;
+            Customers.Add(newCustomer);
+            RefreshList();
         }
 
         private async void EditImage_Tapped(object sender, TappedRoutedEventArgs e)
@@ -80,6 +99,27 @@ namespace POSUNO.Pages
             customer.IsEdit = true;
             CustomerDialog customerDialog = new CustomerDialog(customer);
             await customerDialog.ShowAsync();
+
+            if (!customer.WasSaved)
+            {
+                return;
+            }
+            customer.User = MainPage.GetInstance().User;
+            Loader loader = new Loader("Por favor Espere....");
+            loader.Show();
+            Response response = await ApiService.PutAsync("Customers", customer, customer.Id);
+            loader.Close();
+
+            if (!response.IsSuccess)
+            {
+                MessageDialog dialog = new MessageDialog(response.Message, "Error");
+                await dialog.ShowAsync();
+                return;
+            }
+            Customer newCustomer = (Customer)response.Result;
+            Customer oldCustomer = Customers.FirstOrDefault(c => c.Id == newCustomer.Id);
+            oldCustomer = newCustomer;
+            RefreshList();
         }
     }
 }

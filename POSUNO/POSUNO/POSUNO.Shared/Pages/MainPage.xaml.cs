@@ -19,16 +19,20 @@ using Windows.UI.Xaml.Navigation;
 
 namespace POSUNO.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+    
     public sealed partial class MainPage : Page
     {
+        private static MainPage _instance;
         public MainPage()
         {
             this.InitializeComponent();
+            _instance = this;
         }
         public User User { get; set; }
+
+        public static MainPage GetInstance() {
+            return _instance;
+        }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
